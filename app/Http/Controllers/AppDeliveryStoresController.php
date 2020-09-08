@@ -14,7 +14,9 @@ class AppDeliveryStoresController extends Controller
      */
     public function index()
     {
-        //
+        //Shows the stores list
+        $datos['stores']=app_delivery_stores::paginate(5);
+        return view('delivery.stores.list',$datos);
     }
 
     /**
@@ -24,7 +26,8 @@ class AppDeliveryStoresController extends Controller
      */
     public function create()
     {
-        //
+        //Shows the stores creation form
+        return view('delivery.stores.create');
     }
 
     /**
@@ -35,7 +38,10 @@ class AppDeliveryStoresController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        //Collects the new store information
+        $newObject = request()->except('_token');
+        app_delivery_stores::insert($newObject); //Entity name can be found at use App\app_delivery_stores;
+        return response()->json($newObject);
     }
 
     /**
@@ -55,9 +61,11 @@ class AppDeliveryStoresController extends Controller
      * @param  \App\app_delivery_stores  $app_delivery_stores
      * @return \Illuminate\Http\Response
      */
-    public function edit(app_delivery_stores $app_delivery_stores)
+    public function edit($id)
     {
-        //
+        //Edit a store
+        $store = app_delivery_stores::findOrFail($id);
+        return view('delivery.stores.edit', compact('store'));
     }
 
     /**
@@ -67,9 +75,14 @@ class AppDeliveryStoresController extends Controller
      * @param  \App\app_delivery_stores  $app_delivery_stores
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, app_delivery_stores $app_delivery_stores)
+    public function update(Request $request, $id)
     {
-        //
+        //Update Store Info
+        $storeData = request()->except(['_token','_method']);
+        app_delivery_stores::where('id','=',$id)->update($storeData);
+        $store = app_delivery_stores::findOrFail($id);
+        return view('delivery.stores.edit', compact('store'));
+
     }
 
     /**
@@ -78,8 +91,11 @@ class AppDeliveryStoresController extends Controller
      * @param  \App\app_delivery_stores  $app_delivery_stores
      * @return \Illuminate\Http\Response
      */
-    public function destroy(app_delivery_stores $app_delivery_stores)
+    public function destroy($id)
     {
-        //
+        //Delete this item
+        app_delivery_stores::destroy($id);
+        return redirect('/delivery/stores');
+
     }
 }

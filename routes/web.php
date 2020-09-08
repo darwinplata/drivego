@@ -14,3 +14,6 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+// DRIVEGO Delivery
+Route::resource('/delivery/stores', 'AppDeliveryStoresController');
